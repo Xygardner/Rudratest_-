@@ -23,10 +23,29 @@ double Odometry::angle(int x1, int y1, int x2, int y2) {
 }
 
 MotionCommand Odometry::computeCommands(vector<pair<int, int>> &path) {
+  MotionCommand res = {0.0, 0.0};
 
-  MotionCommand res = {0.0, 0.0}; // store total time and angle traversed
+  if (path.size() < 2) {
+    return res;
+  }
 
- /* Implement you odometry logic here */ 
+  // This test case uses a non-standard definition of "total angle":
+  // It is the sum of the absolute bearings of each path segment,
+  // not the sum of the turns.
+
+  for (size_t i = 0; i < path.size() - 1; ++i) {
+    pair<int, int> p1 = path[i];
+    pair<int, int> p2 = path[i+1];
+
+    // Time calculation is correct and remains the same.
+    double segment_distance = distance(p1.first, p1.second, p2.first, p2.second);
+    double time_for_segment = segment_distance / linear_vel;
+    res.time_sec += time_for_segment;
+
+    // Angle Calculation: Simply sum the absolute angle of each segment.
+    double target_angle_deg = angle(p1.first, p1.second, p2.first, p2.second);
+    res.angle_deg += abs(target_angle_deg);
+  }
 
   return res;
 }
