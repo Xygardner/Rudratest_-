@@ -34,10 +34,10 @@ static vector<uint8_t> hexToBytes(const string &rawHex) {
 
 int decodeUBX(uint8_t *buffer, classId *gps) {
 
-  if (buffer[2] == 0x01 && buffer[3] == 0x02) {
-    // The payload begins after the 6-byte header.
-    // So we pass the address of buffer[6] to the parsing function.
-    return NAV_POSLLH(buffer + 6, gps); 
+  if (buffer[0] == 0x01 && buffer[1] == 0x02) {
+    // The payload begins after the 4-byte header.
+    // So we pass the address of buffer[4] to the parsing function.
+    return NAV_POSLLH(buffer + 4, gps); 
   }
   return 1; 
 }

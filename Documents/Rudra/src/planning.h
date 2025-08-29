@@ -30,7 +30,7 @@ private:
 
   bool isvalid(int x, int y) const; // to check if position is within gridmap
   double heuristic(int x1, int y1, int x2,
-                   int y2) const; // heuristic/cost function for path planner
+                   int y2) const; // heuristic/cost function for path plan
 };
 
 #endif
