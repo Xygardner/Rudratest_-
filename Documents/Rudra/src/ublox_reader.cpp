@@ -10,15 +10,17 @@
 using namespace std;
 
 static int NAV_POSLLH(uint8_t *buffer, classId *gps) {
-  memcpy(&gps->iTOW, buffer, 4);
-  memcpy(&gps->lon, buffer, 4);
-  memcpy(&gps->lat, buffer, 4);
-  memcpy(&gps->height, buffer + 12, 4);
-  memcpy(&gps->hMSL, buffer + 16, 4);
-  memcpy(&gps->hAcc, buffer + 20, 4);
-  memcpy(&gps->vAcc, buffer + 24, 4);
-  return 0;
+    memcpy(&gps->iTOW,   buffer + 0, 4);  // iTOW
+    memcpy(&gps->lon,    buffer + 4, 4);  // lon
+    memcpy(&gps->lat,    buffer + 8, 4);  // lat
+    memcpy(&gps->height, buffer + 12, 4); 
+    memcpy(&gps->hMSL,   buffer + 16, 4); 
+    memcpy(&gps->hAcc,   buffer + 20, 4);
+    memcpy(&gps->vAcc,   buffer + 24, 4); 
+    return 0;
 }
+
+
 
 static vector<uint8_t> hexToBytes(const string &rawHex) {
   vector<uint8_t> bytes;
@@ -31,11 +33,13 @@ static vector<uint8_t> hexToBytes(const string &rawHex) {
 }
 
 int decodeUBX(uint8_t *buffer, classId *gps) {
-  // buffer points at class field
-  if (buffer[30] == 0x01 && buffer[32] == 0x02) { // Class = NAV, ID = POSLLH
-    return NAV_POSLLH(buffer + 4, gps);         // skip length
+
+  if (buffer[2] == 0x01 && buffer[3] == 0x02) {
+    // The payload begins after the 6-byte header.
+    // So we pass the address of buffer[6] to the parsing function.
+    return NAV_POSLLH(buffer + 6, gps); 
   }
-  return 1;
+  return 1; 
 }
 
 GPS gpsFromData(const classId &gps) {
